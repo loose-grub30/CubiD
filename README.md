@@ -1,10 +1,11 @@
-# CuBID: Cubic Discrete Diffusion for High-Dimensional Representation Tokens <br><sub>Official PyTorch Implementation</sub>
+# CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens <br><sub>Official PyTorch Implementation</sub>
 
-[![arXiv](https://img.shields.io/badge/arXiv%20paper-2506.XXXXX-b31b1b.svg)](https://arxiv.org/abs/2506.XXXXX)&nbsp;
+[![arXiv](https://img.shields.io/badge/arXiv%20paper-2603.XXXXX-b31b1b.svg)](https://arxiv.org/abs/2603.XXXXX)&nbsp;
+<img width="1378" height="469" alt="image" src="https://github.com/user-attachments/assets/9a34395c-58be-424f-a6d7-16965467136c" />
 
-<p align="center">
-  <img width="1350" alt="image" src="assets/demo.png" />
-</p>
+> *Can we generate high-dimensional semantic representations discretely, just like language models generate text?*
+
+Generating high-dimensional semantic representations has long been a pursuit for visual generation, yet discrete methods, the paradigm shared with language models, remain stuck with low-dimensional tokens. **CubiD** breaks this barrier with fine-grained cubic masking across the h×w×d tensor, directly modeling dependencies across both spatial and dimensional axes in 768+-dim representation space, while the discretized tokens preserve their original understanding capabilities.
 
 This is a PyTorch/GPU implementation of the paper [Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens](https://arxiv.org/abs/2506.XXXXX):
 
@@ -17,14 +18,6 @@ This is a PyTorch/GPU implementation of the paper [Cubic Discrete Diffusion: Dis
 }
 ```
 
-## Highlights
-
-* **First discrete generation on high-dimensional tokens**: CuBID directly generates 768-dimensional representation tokens, preserving semantic richness for both understanding and generation
-* **Cubic masking strategy**: Fine-grained masking across the entire h×w×d tensor, capturing complex dependencies both within and across spatial positions
-* **Efficient parallel generation**: Transforms intractable O(h×w×d) sequential generation into O(T) parallel iterations where T ≪ h×w×d
-* **Strong scaling behavior**: Consistent improvement from 900M to 3.7B parameters
-
-
 ## Preparation
 
 ### Dataset
@@ -34,71 +27,42 @@ Download [ImageNet](http://image-net.org/download) dataset, and place it in your
 
 Download the code:
 ```
-git clone https://github.com/YuqingWang1029/CuBID.git
-cd CuBID
+git clone https://github.com/YuqingWang1029/CubiD.git
+cd CubiD
 ```
 
-A suitable [conda](https://conda.io/) environment named `cubid` can be created and activated with:
-
-```
-conda env create -f environment.yaml
-conda activate cubid
-```
+Please refer to [TokenBridge](https://github.com/YuqingWang1029/TokenBridge) and [RAE](https://github.com/nyu-visionx/RAE) for environment setup.
 
 ### Pre-trained Models
 
-Download pre-trained CuBID models:
-
-| Model | Params | FID | Inception Score | Download |
-|-------|--------|-----|-----------------|----------|
-| CuBID-Base | 946M | 2.37 | 213.4 | [Coming Soon]() |
-| CuBID-Large | 1.4B | 2.04 | 217.0 | [Coming Soon]() |
-| CuBID-Huge | 3.7B | 1.88 | 247.0 | [Coming Soon]() |
-
-Download RAE (Representation AutoEncoder) models from [huggingface](https://huggingface.co/RAE-collections), including decoders and normalization stats.
+Download pre-trained CubiD models and RAE weights from [Hugging Face](https://huggingface.co/Epiphqny/CubiD).
 
 
 ## Generation
 
 ### Evaluation (ImageNet 256x256)
 
-Evaluate CuBID-Base with classifier-free guidance:
-```bash
-torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
-main_cubid.py \
---model cubid_base \
---eval_bsz 256 --num_images 50000 \
---num_iter 256 --cfg 1.0 --quant_bits 6 --cfg_schedule linear --temperature 1.0 \
---output_dir output/test_cubid_base \
---resume pretrained_models/cubid_base \
---data_path ${IMAGENET_PATH} --evaluate
-```
+For example, evaluate CubiD-Large (without CFG):
 
-Evaluate CuBID-Large with classifier-free guidance:
 ```bash
 torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
 main_cubid.py \
+--img_size 256 --encoder_size 224 \
+--encoder_name facebook/dinov2-with-registers-base \
+--decoder_path ${RAE_DECODER_PATH} \
+--stats_path ${RAE_STATS_PATH} \
+--vae_embed_dim 768 --vae_stride 14 \
 --model cubid_large \
---eval_bsz 256 --num_images 50000 \
---num_iter 256 --cfg 1.0 --quant_bits 6 --cfg_schedule linear --temperature 1.0 \
---output_dir output/test_cubid_large \
---resume pretrained_models/cubid_large \
+--quant_bits 3 --quant_min -9.0 --quant_max 9.0 \
+--eval_bsz 32 --num_images 50000 \
+--num_iter 1536 --cfg 1.0 --cfg_schedule constant --temperature 1.0 \
+--output_dir ${OUTPUT_DIR} \
+--resume cubid_ckpts/cubid_large \
 --data_path ${IMAGENET_PATH} --evaluate
 ```
 
-Evaluate CuBID-Huge with classifier-free guidance:
-```bash
-torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
-main_cubid.py \
---model cubid_huge \
---eval_bsz 128 --num_images 50000 \
---num_iter 256 --cfg 1.0 --quant_bits 6 --cfg_schedule linear --temperature 1.0 \
---output_dir output/test_cubid_huge \
---resume pretrained_models/cubid_huge \
---data_path ${IMAGENET_PATH} --evaluate
-```
-
-- Generation speed can be increased by reducing the number of iterations (e.g., `--num_iter 64`).
+- The `--resume` argument points to a folder (e.g., `cubid_ckpts/cubid_large`), which automatically loads the checkpoint inside.
+- Generation steps can be set from 256 to 1536. More steps generally lead to better results.
 
 ### (Optional) Caching RAE Latents
 
@@ -108,20 +72,29 @@ The RAE latents can be pre-computed and saved to `CACHED_PATH` to accelerate tra
 torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
 main_cache.py \
 --img_size 256 --encoder_size 224 \
+--encoder_name facebook/dinov2-with-registers-base \
+--decoder_path ${RAE_DECODER_PATH} \
+--stats_path ${RAE_STATS_PATH} \
 --batch_size 128 \
 --data_path ${IMAGENET_PATH} --cached_path ${CACHED_PATH}
 ```
 
 ### Training
 
-Script for the default setting (CuBID-Base):
+Script for the default setting (CubiD-Large, 800 epochs, 64 GPUs):
 
 ```bash
-torchrun --nproc_per_node=8 --nnodes=4 --node_rank=${NODE_RANK} --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
+torchrun --nproc_per_node=8 --nnodes=8 --node_rank=${NODE_RANK} --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
 main_cubid.py \
---img_size 256 --encoder_size 224 --vae_embed_dim 768 --vae_stride 16 --patch_size 1 \
---model cubid_base --quant_bits 6 --quant_min -20.0 --quant_max 20.0 \
---epochs 800 --warmup_epochs 100 --batch_size 64 --blr 5.0e-5 \
+--img_size 256 --encoder_size 224 \
+--encoder_name facebook/dinov2-with-registers-base \
+--decoder_path ${RAE_DECODER_PATH} \
+--stats_path ${RAE_STATS_PATH} \
+--vae_embed_dim 768 --vae_stride 14 --patch_size 1 \
+--model cubid_large \
+--quant_bits 3 --quant_min -9.0 --quant_max 9.0 \
+--mask_ratio_min 0.5 --mask_std 0.1 \
+--epochs 800 --warmup_epochs 100 --batch_size 32 --blr 5e-5 --lr_schedule cosine \
 --output_dir ${OUTPUT_DIR} --resume ${OUTPUT_DIR} \
 --data_path ${IMAGENET_PATH}
 ```
@@ -132,4 +105,4 @@ main_cubid.py \
 
 ## Acknowledgements
 
-Part of the code is based on [MAR](https://github.com/LTH14/mar) and [TokenBridge](https://github.com/YuqingWang1029/TokenBridge). We use [RAE](https://github.com/xxxx/RAE) for representation encoding and decoding.
+Part of the code is based on [MAR](https://github.com/LTH14/mar) and [TokenBridge](https://github.com/YuqingWang1029/TokenBridge). We use [RAE](https://github.com/nyu-visionx/RAE) for representation encoding and decoding. Thanks for their awesome work!
