@@ -1,7 +1,7 @@
 # CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens <br><sub>Official PyTorch Implementation</sub>
 
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2603.XXXXX-b31b1b.svg)](https://arxiv.org/abs/2603.XXXXX)&nbsp;
-<img width="1378" height="469" alt="image" src="https://github.com/user-attachments/assets/9a34395c-58be-424f-a6d7-16965467136c" />
+<img alt="image" src="demo.jpg" />
 
 > *Can we generate high-dimensional semantic representations discretely, just like language models generate text?*
 
