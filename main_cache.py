@@ -1,5 +1,5 @@
 """
-CuBID: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
+CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
 """
 
 import argparse
@@ -67,10 +67,10 @@ def get_args_parser():
     parser.add_argument('--encoder_name', default='facebook/dinov2-with-registers-base', type=str,
                         help='DINOv2 encoder name')
     parser.add_argument('--decoder_path',
-                        default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/decoders/dinov2/wReg_base/ViTXL_n08/model.pt',
+                        default='',
                         type=str, help='Path to RAE decoder weights')
     parser.add_argument('--stats_path',
-                        default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/stats/dinov2/wReg_base/imagenet1k/stat.pt',
+                        default='',
                         type=str, help='Path to RAE normalization stats')
 
     # Dataset parameters

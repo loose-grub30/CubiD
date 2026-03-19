@@ -455,9 +455,9 @@ def load_image(path, size=256):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('image_path', type=str, help='Path to test image')
-    parser.add_argument('--decoder_path', type=str, default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/decoders/dinov2/wReg_base/ViTXL_n08/model.pt',
+    parser.add_argument('--decoder_path', type=str, default='',
                        help='Path to decoder weights')
-    parser.add_argument('--stats_path', type=str, default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/stats/dinov2/wReg_base/imagenet1k/stat.pt',
+    parser.add_argument('--stats_path', type=str, default='',
                        help='Path to normalization stats')
     parser.add_argument('--output_dir', type=str, default='./test_fixed')
     parser.add_argument('--device', type=str, default='cuda')

@@ -1,5 +1,5 @@
 """
-CuBID: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
+CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
 """
 
 from functools import partial
@@ -24,8 +24,8 @@ def mask_by_order(mask_len, order, bsz, seq_len):
     return masking
 
 
-class CuBID(nn.Module):
-    """CuBID model for high-dimensional discrete diffusion."""
+class CubiD(nn.Module):
+    """CubiD model for high-dimensional discrete diffusion."""
 
     def __init__(self, img_size=256, vae_stride=16, patch_size=1,
                  encoder_embed_dim=1024, encoder_depth=16, encoder_num_heads=16,
@@ -425,21 +425,21 @@ class CuBID(nn.Module):
 
 
 def cubid_base(**kwargs):
-    return CuBID(
+    return CubiD(
         encoder_embed_dim=1536, encoder_depth=16, encoder_num_heads=16,
         decoder_embed_dim=1536, decoder_depth=16, decoder_num_heads=16,
         mlp_ratio=4, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
 
 
 def cubid_large(**kwargs):
-    return CuBID(
+    return CubiD(
         encoder_embed_dim=1920, encoder_depth=16, encoder_num_heads=16,
         decoder_embed_dim=1920, decoder_depth=16, decoder_num_heads=16,
         mlp_ratio=4, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
 
 
 def cubid_huge(**kwargs):
-    return CuBID(
+    return CubiD(
         encoder_embed_dim=3072, encoder_depth=16, encoder_num_heads=16,
         decoder_embed_dim=3072, decoder_depth=16, decoder_num_heads=16,
         mlp_ratio=4, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)

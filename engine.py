@@ -1,5 +1,5 @@
 """
-CuBID training and evaluation engine.
+CubiD training and evaluation engine.
 """
 
 import math

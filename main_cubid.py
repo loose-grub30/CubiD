@@ -1,5 +1,5 @@
 """
-CuBID: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
+CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens
 """
 
 import argparse
@@ -30,7 +30,7 @@ from engine import train_one_epoch, evaluate
 
 
 def get_args_parser():
-    parser = argparse.ArgumentParser('CuBID training', add_help=False)
+    parser = argparse.ArgumentParser('CubiD training', add_help=False)
     parser.add_argument('--batch_size', default=16, type=int,
                         help='Batch size per GPU (effective batch size is batch_size * # gpus')
     parser.add_argument('--epochs', default=400, type=int)
@@ -46,11 +46,11 @@ def get_args_parser():
                         help='RAE encoder input size (DINOv2 uses 224)')
     parser.add_argument('--encoder_name', default='facebook/dinov2-with-registers-base', type=str,
                         help='DINOv2 encoder name')
-    parser.add_argument('--decoder_path', 
-                        default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/decoders/dinov2/wReg_base/ViTXL_n08/model.pt',
+    parser.add_argument('--decoder_path',
+                        default='',
                         type=str, help='Path to RAE decoder weights')
     parser.add_argument('--stats_path',
-                        default='/mnt/bn/dq-storage-ckpt/wangyuqing/huggingface/hub/RAE-collections/stats/dinov2/wReg_base/imagenet1k/stat.pt',
+                        default='',
                         type=str, help='Path to RAE normalization stats')
     
     # RAE feature dimensions
@@ -243,7 +243,7 @@ def main(args):
     print(f"RAE spatial output: {actual_spatial_size}x{actual_spatial_size}")
     print(f"RAE channel dimension: {args.vae_embed_dim}")
 
-    # Build CuBID model
+    # Build CubiD model
     model = cubid.__dict__[args.model](
         img_size=args.encoder_size,
         vae_stride=args.vae_stride,
