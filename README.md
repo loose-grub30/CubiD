@@ -1,20 +1,20 @@
 # CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens <br><sub>Official PyTorch Implementation</sub>
 
-[![arXiv](https://img.shields.io/badge/arXiv%20paper-2603.XXXXX-b31b1b.svg)](https://arxiv.org/abs/2603.XXXXX)&nbsp;
+[![arXiv](https://img.shields.io/badge/arXiv%20paper-2603.19232-b31b1b.svg)](https://arxiv.org/abs/2603.19232)&nbsp;
 <img alt="image" src="demo.jpg" />
 
 > *Can we generate high-dimensional semantic representations discretely, just like language models generate text?*
 
 Generating high-dimensional semantic representations has long been a pursuit for visual generation, yet discrete methods, the paradigm shared with language models, remain stuck with low-dimensional tokens. **CubiD** breaks this barrier with fine-grained cubic masking across the h×w×d tensor, directly modeling dependencies across both spatial and dimensional axes in 768 dim representation space, while the discretized tokens preserve their original understanding capabilities.
 
-This is a PyTorch/GPU implementation of the paper [Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens](https://arxiv.org/abs/2506.XXXXX):
+This is a PyTorch/GPU implementation of the paper [Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens](https://arxiv.org/abs/2603.19232):
 
 ```
 @article{wang2025cubic,
   title={Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens},
   author={Wang, Yuqing and Ma, Chuofan and Lin, Zhijie and Teng, Yao and Yu, Lijun and Wang, Shuai and Han, Jiaming and Feng, Jiashi and Jiang, Yi and Liu, Xihui},
-  journal={arXiv preprint arXiv:2506.XXXXX},
-  year={2025}
+  journal={arXiv preprint arXiv:2603.19232},
+  year={2026}
 }
 ```
 
